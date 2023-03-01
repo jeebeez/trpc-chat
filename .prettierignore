@@ -1,0 +1,10 @@
+package.json
+yarn-lock.json
+/dist
+.github/*
+/node_modules
+.yarn
+.vscode
+.next
+.husky
+/public
