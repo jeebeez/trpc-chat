@@ -20,7 +20,7 @@ const Chat = () => {
       trpc.user.all.setData(undefined, (prev) => {
         const newMessage: Message = {
           text,
-          url: image ? 'https://via.placeholder.com/150' : '',
+          url: image ? 'https://via.placeholder.com/300' : '',
           isDeleted: false,
           createdAt: new Date(),
           updatedAt: new Date(),
