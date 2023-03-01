@@ -23,9 +23,9 @@ const Messages = ({ textMessage, imageUrl, timeOfMessage, deleteRecord, id }: Me
           <Image
             src={imageUrl}
             alt='image-message'
-            className='object-contain'
-            width={384}
-            height={200}
+            className='max-h-96 max-w-sm object-contain'
+            width={300}
+            height={300}
           />
         ) : null}
       </div>
