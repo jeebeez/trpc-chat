@@ -12,34 +12,35 @@ const Chat = () => {
   const [text, setText] = useState('');
   const trpc = api.useContext();
 
-  const { mutateAsync: addMutation } = api.user.addMessage.useMutation({
-    onMutate: async () => {
-      await trpc.user.all.cancel();
-      const prevMessageData = trpc.user.all.getData();
+  const { mutateAsync: addMutation, isLoading: addMessageLoading } =
+    api.user.addMessage.useMutation({
+      onMutate: async () => {
+        await trpc.user.all.cancel();
+        const prevMessageData = trpc.user.all.getData();
 
-      trpc.user.all.setData(undefined, (prev) => {
-        const newMessage: Message = {
-          text,
-          url: image ? 'https://via.placeholder.com/300' : '',
-          isDeleted: false,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-          _id: uuidv4(),
-        };
-        if (!prev) return [newMessage];
-        return [newMessage, ...prev];
-      });
+        trpc.user.all.setData(undefined, (prev) => {
+          const newMessage: Message = {
+            text,
+            url: image ? 'https://via.placeholder.com/300' : '',
+            isDeleted: false,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            _id: uuidv4(),
+          };
+          if (!prev) return [newMessage];
+          return [newMessage, ...prev];
+        });
 
-      return { prevMessageData };
-    },
-    onError: (err, newPost, ctx) => {
-      if (err) {
-        toast.error(err.message);
-      }
-      if (!ctx) return;
-      trpc.user.all.setData(undefined, () => ctx.prevMessageData);
-    },
-  });
+        return { prevMessageData };
+      },
+      onError: (err, newPost, ctx) => {
+        if (err) {
+          toast.error(err.message);
+        }
+        if (!ctx) return;
+        trpc.user.all.setData(undefined, () => ctx.prevMessageData);
+      },
+    });
 
   const { mutate: deleteMutation } = api.user.delete.useMutation({
     onMutate: async (deleteId) => {
@@ -78,6 +79,8 @@ const Chat = () => {
   }
 
   const handleSubmit = async () => {
+    if (addMessageLoading) return;
+
     const UPLOAD_MAX_FILE_SIZE = 5000000;
 
     if (image && image.size > UPLOAD_MAX_FILE_SIZE) {
